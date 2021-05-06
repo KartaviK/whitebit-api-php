@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Kartavik\WhiteBIT\Api\Parser;
 
 use Kartavik\WhiteBIT\Api\Contracts\ParserContract;
-use Kartavik\WhiteBIT\Api\Data\V1;
 use Psr\Http\Message\ResponseInterface;
 
 use function Safe\json_decode;
@@ -31,16 +30,9 @@ class ArrayParser implements ParserContract
         return $data;
     }
 
-    /** @return V1\Response<MarketInfoArrayData> */
-    public function parseMarketInfoV1Collection(ResponseInterface $response): V1\Response
+    /** @return array{success: bool, message: string, result: list<MarketInfoArrayData>, params?: mixed[]} */
+    public function parseMarketInfoV1Collection(ResponseInterface $response): array
     {
-        $data = $this->parse($response);
-
-        return new V1\Response(
-            $data['success'],
-            $data['result'],
-            $data['message'] ?? '',
-            $data['params'] ?? []
-        );
+        return $this->parse($response);
     }
 }

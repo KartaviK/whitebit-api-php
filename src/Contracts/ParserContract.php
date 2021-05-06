@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api\Contracts;
 
-use Kartavik\WhiteBIT\Api\Data;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -39,7 +38,7 @@ interface ParserContract
     /**
      * @template TOutput of T
      *
-     * @return Data\V1\Response<list<TOutput>>
+     * @return list<TOutput>
      */
-    public function parseMarketInfoV1Collection(ResponseInterface $response): Data\V1\Response;
+    public function parseMarketInfoV1Collection(ResponseInterface $response): mixed;
 }

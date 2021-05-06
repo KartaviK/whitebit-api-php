@@ -42,7 +42,7 @@ class ObjectParser implements ParserContract
         );
     }
 
-    public function parseMarketInfoV1Collection(ResponseInterface $response): Data\V1\Response
+    public function parseMarketInfoV1Collection(ResponseInterface $response): array
     {
         $data = $this->parser->parse($response);
         $result = $data['success']
@@ -51,13 +51,9 @@ class ObjectParser implements ParserContract
                 fn ($arg): Data\V1\MarketInfo => $this->parseMarketInfoV1($arg)
             )
             : [];
+        $data['result'] = $result;
 
-        return new Data\V1\Response(
-            $data['success'],
-            $result,
-            $data['message'] ?? '',
-            $data['params'] ?? []
-        );
+        return $data;
     }
 
     /**
