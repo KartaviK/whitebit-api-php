@@ -16,8 +16,22 @@ namespace Kartavik\WhiteBIT\Api;
  *  makerFee: numeric-string,
  *  takerFee: numeric-string
  * }
+ *
+ * @psalm-type MarketActivityV1Data = array{
+ *  at: int,
+ *  ticker: array{
+ *  bid: numeric-string,
+ *  ask: numeric-string,
+ *  low: numeric-string,
+ *  high: numeric-string,
+ *  last: numeric-string,
+ *  vol: numeric-string,
+ *  deal: numeric-string,
+ *  change: numeric-string
+ * }
  */
 interface Action
 {
     public const MARKETS = 'markets';
+    public const TICKERS = 'tickers';
 }

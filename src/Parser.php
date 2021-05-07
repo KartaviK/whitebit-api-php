@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Kartavik\WhiteBIT\Api;
 use Kartavik\WhiteBIT\Api\Contracts\AmountFactoryContract;
-use Kartavik\WhiteBIT\Api\Contracts\ParserContract;
 
 /**
  * @psalm-import-type MarketInfoV1Data from Action
+ * @psalm-import-type MarketActivityV1Data from Action
  */
-class Parser implements ParserContract
+class Parser implements Api\Contracts\ParserContract
 {
     public function __construct(private AmountFactoryContract $amountFactory) {}
 
+    /** {@inheritDoc} */
     public function parseMarketInfoV1(array $data): Data\V1\MarketInfo
     {
         return new Data\V1\MarketInfo(
@@ -29,28 +32,51 @@ class Parser implements ParserContract
         );
     }
 
-    public function parseMarketInfoV1Collection(array $data): array
+    /** @return ArrayCollection<int, Data\V1\MarketInfo> */
+    public function parseMarketInfoV1Collection(array $data): ArrayCollection
     {
         return $this->map($data, fn (array $arg): Data\V1\MarketInfo => $this->parseMarketInfoV1($arg));
+    }
+
+    /** {@inheritDoc} */
+    public function parseMarketActivityV1(string $name, array $data): Api\Contracts\Data\V1\MarketActivityContract
+    {
+        $ticker = $data['ticker'];
+
+        return new Api\Data\V1\MarketActivity(
+            $name,
+            (int) $data['at'],
+            $this->amountFactory->build($ticker['ask']),
+            $this->amountFactory->build($ticker['bid']),
+            $this->amountFactory->build($ticker['low']),
+            $this->amountFactory->build($ticker['high']),
+            $this->amountFactory->build($ticker['last']),
+            $this->amountFactory->build($ticker['vol']),
+            $this->amountFactory->build($ticker['deal']),
+            $this->amountFactory->build($ticker['change']),
+        );
+    }
+
+    /** @return ArrayCollection<int, Api\Data\V1\MarketActivity> */
+    public function parseMarketActivityV1Collection(array $data): ArrayCollection
+    {
+        return $this->map(
+            $data,
+            fn (array $arg, string $name): Api\Data\V1\MarketActivity => $this->parseMarketActivityV1($name, $arg)
+        );
     }
 
     /**
      * @template TInput
      * @template TOutput
      *
-     * @param list<TInput>                   $data
-     * @param \Closure(TInput $arg): TOutput $mapper
+     * @param list<TInput> $data
+     * @param \Closure(TInput $arg, string|int $key): TOutput $mapper
      *
-     * @return list<TOutput>
+     * @return ArrayCollection<int, TOutput>
      */
-    private function map(array $data, \Closure $mapper): array
+    private function map(array $data, \Closure $mapper): ArrayCollection
     {
-        $result = [];
-
-        foreach ($data as $datum) {
-            $result[] = $mapper($datum);
-        }
-
-        return $result;
+        return new ArrayCollection(array_map($mapper, $data, array_keys($data)));
     }
 }

@@ -9,4 +9,6 @@ use Http\Promise\Promise;
 interface RepositoryAsyncAwareContract
 {
     public function getMarketsInfoV1Async(): Promise;
+
+    public function getMarketsActivityV1Async(): Promise;
 }

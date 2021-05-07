@@ -6,5 +6,7 @@ namespace Kartavik\WhiteBIT\Api\Contracts;
 
 interface RepositoryContract
 {
-    public function getMarketsInfoV1(): mixed;
+    public function getMarketsInfoV1(): iterable;
+
+    public function getMarketsActivityV1(): iterable;
 }

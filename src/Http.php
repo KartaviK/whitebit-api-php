@@ -21,7 +21,7 @@ class Http implements Contracts\HttpContract
     ) {
     }
 
-    public function get(string $version, string $type, string $api, array $params = [], array $headers = []): Promise
+    public function get(Version $version, string $type, string $api, array $params = [], array $headers = []): Promise
     {
         $request = $this->factory->createRequest(
             'GET',
@@ -50,10 +50,10 @@ class Http implements Contracts\HttpContract
         return (array) json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    private function getUrl(string $version, string $type, string $api, array $params = []): string
+    private function getUrl(Version $version, string $type, string $api, array $params = []): string
     {
         $parametersQuery = !empty($params) ? '?' . http_build_query($params) : '';
 
-        return "{$this->uri}/{$version}/{$type}/{$api}{$parametersQuery}";
+        return "{$this->uri}/{$version->getValue()}/{$type}/{$api}{$parametersQuery}";
     }
 }

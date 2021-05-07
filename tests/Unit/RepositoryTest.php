@@ -13,6 +13,7 @@ use Kartavik\WhiteBIT\Api\Parser;
 use Kartavik\WhiteBIT\Api\Repository;
 use Kartavik\WhiteBIT\Api\Tests\RequestFactory;
 use Kartavik\WhiteBIT\Api\Tests\TestCase;
+use Kartavik\WhiteBIT\Api\Version;
 
 class RepositoryTest extends TestCase
 {
@@ -22,7 +23,6 @@ class RepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
 
         $client = new GuzzleHttp\Client([
             'handler' => $this->stack,
@@ -51,10 +51,39 @@ class RepositoryTest extends TestCase
             ],
         ])));
 
-        $result = $this->repository->getMarketsInfoV1();
+        $result = $this->repository->getMarketsInfo(Version::V_1());
 
         $this->assertCount(1, $result);
         $this->assertArrayHasKey(0, $result);
         $this->assertInstanceOf(V1\MarketInfo::class, $result[0]);
+    }
+
+    public function testActivityV1(): void
+    {
+        $this->mock->append(new GuzzleHttp\Psr7\Response(200, [], \Safe\json_encode([
+            'success' => true,
+            'message' => '',
+            'result' => [
+                'BTC_USDT' => [
+                    'at' => 1594232194,
+                    'ticker' => [
+                        "bid" => "9412.1",
+                        "ask" => "9416.33",
+                        "low" => "9203.13",
+                        "high" => "9469.99",
+                        "last" => "9414.4",
+                        "vol" => "27324.819448",
+                        "deal" => "254587570.43407191",
+                        "change" => "1.53"
+                    ],
+                ],
+            ],
+        ])));
+
+        $result = $this->repository->getMarketsActivityV1();
+
+        $this->assertCount(1, $result);
+        $this->assertArrayHasKey(0, $result);
+        $this->assertInstanceOf(V1\MarketActivity::class, $result[0]);
     }
 }
