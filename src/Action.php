@@ -16,10 +16,7 @@ namespace Kartavik\WhiteBIT\Api;
  *  makerFee: numeric-string,
  *  takerFee: numeric-string
  * }
- *
- * @psalm-type MarketActivityV1Data = array{
- *  at: int,
- *  ticker: array{
+ * @psalm-type MarketActivity = array{
  *  bid: numeric-string,
  *  ask: numeric-string,
  *  low: numeric-string,
@@ -29,9 +26,23 @@ namespace Kartavik\WhiteBIT\Api;
  *  deal: numeric-string,
  *  change: numeric-string
  * }
+ * @psalm-type MarketActivityV1Data = array{
+ *  at: int,
+ *  ticker: MarketActivity
+ * }
+ * @psalm-type KlineItem = array{
+ *  0: int,
+ *  1: numeric-string,
+ *  3: numeric-string,
+ *  4: numeric-string,
+ *  5: numeric-string,
+ *  6: numeric-string
+ * }
  */
 interface Action
 {
     public const MARKETS = 'markets';
     public const TICKERS = 'tickers';
+    public const TICKER = 'ticker';
+    public const KLINE = 'kline';
 }

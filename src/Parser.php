@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api;
 
+use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Kartavik\WhiteBIT\Api;
 use Kartavik\WhiteBIT\Api\Contracts\AmountFactoryContract;
@@ -11,9 +12,18 @@ use Kartavik\WhiteBIT\Api\Contracts\AmountFactoryContract;
 /**
  * @psalm-import-type MarketInfoV1Data from Action
  * @psalm-import-type MarketActivityV1Data from Action
+ * @psalm-import-type KlineItem from Action
  */
 class Parser implements Api\Contracts\ParserContract
 {
+    public const KLINE_TIME = 0;
+    public const KLINE_OPEN = 1;
+    public const KLINE_CLOSE = 2;
+    public const KLINE_HIGH = 3;
+    public const KLINE_LOW = 4;
+    public const KLINE_VOLUME_STOCK = 5;
+    public const KLINE_VOLUME_MONEY = 6;
+
     public function __construct(private AmountFactoryContract $amountFactory) {}
 
     /** {@inheritDoc} */
@@ -39,7 +49,7 @@ class Parser implements Api\Contracts\ParserContract
     }
 
     /** {@inheritDoc} */
-    public function parseMarketActivityV1(string $name, array $data): Api\Contracts\Data\V1\MarketActivityContract
+    public function parseMarketActivityV1(array $data, string $name): Api\Contracts\Data\V1\MarketActivityContract
     {
         $ticker = $data['ticker'];
 
@@ -62,7 +72,44 @@ class Parser implements Api\Contracts\ParserContract
     {
         return $this->map(
             $data,
-            fn (array $arg, string $name): Api\Data\V1\MarketActivity => $this->parseMarketActivityV1($name, $arg)
+            fn (array $arg, string $name): Api\Data\V1\MarketActivity => $this->parseMarketActivityV1($arg, $name)
+        );
+    }
+
+    public function parseSingleMarketActivity(array $data, string $name): Api\Data\V1\MarketActivity
+    {
+        return new Api\Data\V1\MarketActivity(
+            $name,
+            Carbon::now()->getTimestamp(),
+            $this->amountFactory->build($data['ask']),
+            $this->amountFactory->build($data['bid']),
+            $this->amountFactory->build($data['low']),
+            $this->amountFactory->build($data['high']),
+            $this->amountFactory->build($data['last']),
+            $this->amountFactory->build($data['volume']),
+            $this->amountFactory->build($data['deal']),
+            $this->amountFactory->build($data['change']),
+        );
+    }
+
+    public function parseKline(array $data): Api\Contracts\Data\V1\KlineContract
+    {
+        return new Api\Data\V1\Kline(
+            $data[self::KLINE_TIME],
+            $this->amountFactory->build($data[self::KLINE_OPEN]),
+            $this->amountFactory->build($data[self::KLINE_CLOSE]),
+            $this->amountFactory->build($data[self::KLINE_HIGH]),
+            $this->amountFactory->build($data[self::KLINE_LOW]),
+            $this->amountFactory->build($data[self::KLINE_VOLUME_STOCK]),
+            $this->amountFactory->build($data[self::KLINE_VOLUME_MONEY]),
+        );
+    }
+
+    public function parseKlineCollection(array $data, string $name): Api\Data\V1\KlineCollection
+    {
+        return new Api\Data\V1\KlineCollection(
+            $name,
+            ...$this->map($data, fn (array $arg) => $this->parseKline($arg))->toArray()
         );
     }
 

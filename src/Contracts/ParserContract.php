@@ -10,6 +10,8 @@ use Kartavik\WhiteBIT\Api;
 /**
  * @psalm-import-type MarketInfoV1Data from Api\Action
  * @psalm-import-type MarketActivityV1Data from Api\Action
+ * @psalm-import-type MarketActivity from Api\Action
+ * @psalm-import-type KlineItem from Api\Action
  */
 interface ParserContract
 {
@@ -28,11 +30,26 @@ interface ParserContract
     /**
      * @param MarketActivityV1Data $data
      */
-    public function parseMarketActivityV1(string $name, array $data): Api\Contracts\Data\V1\MarketActivityContract;
+    public function parseMarketActivityV1(array $data, string $name): Api\Contracts\Data\V1\MarketActivityContract;
 
     /**
      * @param array<string, MarketActivityV1Data> $data
      * @return Collection<int, Api\Contracts\Data\V1\MarketActivityContract>
      */
     public function parseMarketActivityV1Collection(array $data): Collection;
+
+    /**
+     * @param MarketActivity $data
+     */
+    public function parseSingleMarketActivity(array $data, string $name): Api\Data\V1\MarketActivity;
+
+    /**
+     * @param KlineItem $data
+     */
+    public function parseKline(array $data): Api\Contracts\Data\V1\KlineContract;
+
+    /**
+     * @param list<KlineItem> $data
+     */
+    public function parseKlineCollection(array $data, string $name): Collection;
 }

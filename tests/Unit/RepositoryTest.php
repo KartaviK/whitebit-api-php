@@ -86,4 +86,51 @@ class RepositoryTest extends TestCase
         $this->assertArrayHasKey(0, $result);
         $this->assertInstanceOf(V1\MarketActivity::class, $result[0]);
     }
+
+    public function testGetSingleMarketActivity(): void
+    {
+        $this->mock->append(new GuzzleHttp\Psr7\Response(200, [], \Safe\json_encode([
+            'success' => true,
+            'message' => '',
+            'result' => [
+                "bid" => "9412.1",
+                "ask" => "9416.33",
+                "low" => "9203.13",
+                "high" => "9469.99",
+                "last" => "9414.4",
+                "volume" => "27324.819448",
+                "deal" => "254587570.43407191",
+                "change" => "1.53",
+            ],
+        ])));
+
+        $result = $this->repository->getSingleMarketActivityV1('ETH', 'BTC');
+
+        $this->assertInstanceOf(V1\MarketActivity::class, $result);
+    }
+
+    public function testGetkline(): void
+    {
+        $this->mock->append(new GuzzleHttp\Psr7\Response(200, [], \Safe\json_encode([
+            'success' => true,
+            'message' => '',
+            'result' => [
+                [
+                    594166400,
+                    "9257.4",
+                    "9243.19",
+                    "9265.14",
+                    "9231.32",
+                    "817.535991",
+                    "7558389.54233595",
+                ],
+            ],
+        ])));
+
+        $result = $this->repository->getKline('ETH', 'BTC');
+
+        $this->assertInstanceOf(V1\KlineCollection::class, $result);
+        $this->assertCount(1, $result);
+        $this->assertInstanceOf(V1\Kline::class, $result[0]);
+    }
 }
