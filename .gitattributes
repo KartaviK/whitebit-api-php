@@ -1,0 +1,7 @@
+/phpstan.neon export-ignore
+/tests export-ignore
+/adapter export-ignore
+/.gitignore export-ignore
+/psalm.xml export-ignore
+/README.md export-ignore
+/.phpunit.cache

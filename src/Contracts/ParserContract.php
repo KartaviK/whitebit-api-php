@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api\Contracts;
 
-use Psr\Http\Message\ResponseInterface;
-
 /**
- * @template T of array|object
- *
  * @psalm-type MarketInfoArrayData = array{
  *  name: string,
  *  moneyPrec: numeric-string,
@@ -23,22 +19,21 @@ use Psr\Http\Message\ResponseInterface;
  */
 interface ParserContract
 {
-    /** @return T */
-    public function parse(ResponseInterface $response): mixed;
-
     /**
-     * @template TOutput of T
-     *
      * @param MarketInfoArrayData $data
      *
-     * @return TOutput
+     * @template T
+     *
+     * @return T
      */
     public function parseMarketInfoV1(array $data): mixed;
 
     /**
-     * @template TOutput of T
+     * @param list<MarketInfoArrayData> $data
      *
-     * @return list<TOutput>
+     * @template T
+     *
+     * @return T
      */
-    public function parseMarketInfoV1Collection(ResponseInterface $response): mixed;
+    public function parseMarketInfoV1Collection(array $data): mixed;
 }

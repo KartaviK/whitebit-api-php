@@ -2,30 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Kartavik\WhiteBIT\Api\Parser;
+namespace Kartavik\WhiteBIT\Api;
 
 use Kartavik\WhiteBIT\Api\Contracts\AmountFactoryContract;
 use Kartavik\WhiteBIT\Api\Contracts\ParserContract;
 use Kartavik\WhiteBIT\Api\Data;
-use Psr\Http\Message\ResponseInterface;
 
 /**
- * @template-implements ParserContract<object>
- *
  * @psalm-import-type MarketInfoArrayData from ParserContract
  */
 class ObjectParser implements ParserContract
 {
-    public function __construct(
-        private AmountFactoryContract $amountFactory,
-        private ArrayParser $parser
-    ){
-    }
-
-    public function parse(ResponseInterface $response): array
-    {
-        return $this->parser->parse($response);
-    }
+    public function __construct(private AmountFactoryContract $amountFactory) {}
 
     public function parseMarketInfoV1(array $data): Data\V1\MarketInfo
     {
@@ -42,18 +30,9 @@ class ObjectParser implements ParserContract
         );
     }
 
-    public function parseMarketInfoV1Collection(ResponseInterface $response): array
+    public function parseMarketInfoV1Collection(array $data): array
     {
-        $data = $this->parser->parse($response);
-        $result = $data['success']
-            ? $this->map(
-                $data['result'],
-                fn ($arg): Data\V1\MarketInfo => $this->parseMarketInfoV1($arg)
-            )
-            : [];
-        $data['result'] = $result;
-
-        return $data;
+        return $this->map($data, fn ($arg): Data\V1\MarketInfo => $this->parseMarketInfoV1($arg));
     }
 
     /**

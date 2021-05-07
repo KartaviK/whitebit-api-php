@@ -9,8 +9,7 @@ use Kartavik\WhiteBIT\Api\Adapter\Client;
 use Kartavik\WhiteBIT\Api\AmountFactory;
 use Kartavik\WhiteBIT\Api\Data\V1;
 use Kartavik\WhiteBIT\Api\Http;
-use Kartavik\WhiteBIT\Api\Parser\ArrayParser;
-use Kartavik\WhiteBIT\Api\Parser\ObjectParser;
+use Kartavik\WhiteBIT\Api\ObjectParser;
 use Kartavik\WhiteBIT\Api\Repository;
 use Kartavik\WhiteBIT\Api\Tests\RequestFactory;
 use Kartavik\WhiteBIT\Api\Tests\TestCase;
@@ -29,7 +28,7 @@ class RepositoryTest extends TestCase
             'handler' => $this->stack,
         ]);
         $this->http = new Http(new Client($client), new RequestFactory());
-        $this->repository = new Repository($this->http, new ObjectParser(new AmountFactory(), new ArrayParser()));
+        $this->repository = new Repository($this->http, new ObjectParser(new AmountFactory()));
     }
 
     public function testMarketsV1(): void
