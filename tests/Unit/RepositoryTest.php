@@ -9,7 +9,7 @@ use Kartavik\WhiteBIT\Api\Adapter\Client;
 use Kartavik\WhiteBIT\Api\AmountFactory;
 use Kartavik\WhiteBIT\Api\Data\V1;
 use Kartavik\WhiteBIT\Api\Http;
-use Kartavik\WhiteBIT\Api\ObjectParser;
+use Kartavik\WhiteBIT\Api\Parser;
 use Kartavik\WhiteBIT\Api\Repository;
 use Kartavik\WhiteBIT\Api\Tests\RequestFactory;
 use Kartavik\WhiteBIT\Api\Tests\TestCase;
@@ -28,7 +28,7 @@ class RepositoryTest extends TestCase
             'handler' => $this->stack,
         ]);
         $this->http = new Http(new Client($client), new RequestFactory());
-        $this->repository = new Repository($this->http, new ObjectParser(new AmountFactory()));
+        $this->repository = new Repository($this->http, new Parser(new AmountFactory()));
     }
 
     public function testMarketsV1(): void
@@ -53,6 +53,8 @@ class RepositoryTest extends TestCase
 
         $result = $this->repository->getMarketsInfoV1();
 
-        $this->assertInstanceOf(V1\Response::class, $result);
+        $this->assertCount(1, $result);
+        $this->assertArrayHasKey(0, $result);
+        $this->assertInstanceOf(V1\MarketInfo::class, $result[0]);
     }
 }

@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Kartavik\WhiteBIT\Api\Data\V1;
 
 use Kartavik\WhiteBIT\Api\Contracts\AmountContract;
+use Kartavik\WhiteBIT\Api\Contracts\Data\V1\MarketInfoContract;
 
-class MarketInfo
+class MarketInfo implements MarketInfoContract
 {
     public function __construct(
         private string $name,

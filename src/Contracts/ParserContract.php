@@ -4,36 +4,22 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api\Contracts;
 
+use Kartavik\WhiteBIT\Api;
+
 /**
- * @psalm-type MarketInfoArrayData = array{
- *  name: string,
- *  moneyPrec: numeric-string,
- *  stock: string,
- *  money: string,
- *  stockPrec: numeric-string,
- *  feePrec: numeric-string,
- *  minAmount: numeric-string,
- *  makerFee: numeric-string,
- *  takerFee: numeric-string
- * }
+ * @psalm-import-type MarketInfoV1Data from Api\Action
  */
 interface ParserContract
 {
     /**
-     * @param MarketInfoArrayData $data
-     *
-     * @template T
-     *
-     * @return T
+     * @param MarketInfoV1Data $data
      */
-    public function parseMarketInfoV1(array $data): mixed;
+    public function parseMarketInfoV1(array $data): Api\Contracts\Data\V1\MarketInfoContract;
 
     /**
-     * @param list<MarketInfoArrayData> $data
+     * @param list<MarketInfoV1Data> $data
      *
-     * @template T
-     *
-     * @return T
+     * @return list<Api\Contracts\Data\V1\MarketInfoContract>
      */
     public function parseMarketInfoV1Collection(array $data): mixed;
 }

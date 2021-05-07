@@ -6,5 +6,6 @@ namespace Kartavik\WhiteBIT\Api\Contracts;
 
 interface AmountFactoryContract
 {
-    public function build(string $value): AmountContract;
+    /** @param numeric-string $amount */
+    public function build(string $amount): AmountContract;
 }

@@ -6,12 +6,11 @@ namespace Kartavik\WhiteBIT\Api;
 
 use Kartavik\WhiteBIT\Api\Contracts\AmountFactoryContract;
 use Kartavik\WhiteBIT\Api\Contracts\ParserContract;
-use Kartavik\WhiteBIT\Api\Data;
 
 /**
- * @psalm-import-type MarketInfoArrayData from ParserContract
+ * @psalm-import-type MarketInfoV1Data from Action
  */
-class ObjectParser implements ParserContract
+class Parser implements ParserContract
 {
     public function __construct(private AmountFactoryContract $amountFactory) {}
 
@@ -32,7 +31,7 @@ class ObjectParser implements ParserContract
 
     public function parseMarketInfoV1Collection(array $data): array
     {
-        return $this->map($data, fn ($arg): Data\V1\MarketInfo => $this->parseMarketInfoV1($arg));
+        return $this->map($data, fn (array $arg): Data\V1\MarketInfo => $this->parseMarketInfoV1($arg));
     }
 
     /**

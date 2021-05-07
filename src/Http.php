@@ -29,21 +29,20 @@ class Http implements Contracts\HttpContract
             $headers
         );
 
-        return $this->http->sendAsyncRequest($request);
-//            ->then(function (ResponseInterface $response) use ($request): array {
-//                return $response
-//                $payload = $this->parseBody($response);
-//
-////                if (isset($payload['success']) && !$payload['success']) {
-////                    throw new Exceptions\RequestException($payload['message'], $request);
-////                }
-////
-////                if (!isset($payload['result']) && isset($payload['status'])) {
-////                    throw new Exceptions\InternalException($payload['errors'], $request, $response);
-////                }
-//
-//                return $payload['result'];
-//            });
+        return $this->http->sendAsyncRequest($request)
+            ->then(function (ResponseInterface $response) use ($request): array {
+                $payload = $this->parseBody($response);
+
+                if (isset($payload['success']) && !$payload['success']) {
+                    throw new Exceptions\ClientException($payload['message']);
+                }
+
+                if (!isset($payload['result']) && isset($payload['status'])) {
+                    throw new Exceptions\ServerException($payload['errors'], $request, $response);
+                }
+
+                return $payload['result'];
+            });
     }
 
     private function parseBody(ResponseInterface $response): array
