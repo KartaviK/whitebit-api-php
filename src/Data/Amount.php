@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kartavik\WhiteBIT\Api\Data;
 
 use Kartavik\WhiteBIT\Api\Contracts;
+
 use function is_numeric;
 
 class Amount implements Contracts\AmountContract

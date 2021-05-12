@@ -11,4 +11,15 @@ interface RepositoryAsyncAwareContract
     public function getMarketsInfoV1Async(): Promise;
 
     public function getMarketsActivityV1Async(): Promise;
+
+    public function getSingleMarketActivityV1Async(string $stock, string $money): Promise;
+
+    public function getKlineAsync(
+        string $stock,
+        string $money,
+        ?int $start = null,
+        ?int $end = null,
+        string $interval = '1h',
+        int $limit = 1440
+    ): Promise;
 }

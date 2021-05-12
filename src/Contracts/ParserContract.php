@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api\Contracts;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Kartavik\WhiteBIT\Api;
 
@@ -52,4 +53,15 @@ interface ParserContract
      * @param list<KlineItem> $data
      */
     public function parseKlineCollection(array $data, string $name): Collection;
+
+    /**
+     * @return Api\Contracts\Data\V1\MarketContract
+     */
+    public function parseMarket(string $marketName): Api\Contracts\Data\V1\MarketContract;
+
+    /**
+     * @param list<string> $data
+     * @return Collection<int, Api\Contracts\Data\V1\MarketContract>
+     */
+    public function parseMarketCollection(array $data): Collection;
 }

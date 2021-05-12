@@ -103,6 +103,17 @@ class Repository implements Contracts\RepositoryContract, Contracts\RepositoryAs
         ));
     }
 
+    public function getSymbolsV1(): iterable
+    {
+        return $this->getSymbolsV1Async()->wait();
+    }
+
+    public function getSymbolsV1Async(): Promise
+    {
+        return $this->http->get(Version::V_1(), Contracts\HttpContract::PUBLIC_API, Action::SYMBOLS)
+            ->then(fn (array $result): iterable => $this->parser->parseMarketCollection($result));
+    }
+
     public function parse(array $data, callable $parse): mixed
     {
         return $this->parser !== null ? $parse($data) : $data;

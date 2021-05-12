@@ -45,4 +45,5 @@ interface Action
     public const TICKERS = 'tickers';
     public const TICKER = 'ticker';
     public const KLINE = 'kline';
+    public const SYMBOLS = 'symbols';
 }

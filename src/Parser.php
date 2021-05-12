@@ -24,7 +24,9 @@ class Parser implements Api\Contracts\ParserContract
     public const KLINE_VOLUME_STOCK = 5;
     public const KLINE_VOLUME_MONEY = 6;
 
-    public function __construct(private AmountFactoryContract $amountFactory) {}
+    public function __construct(private AmountFactoryContract $amountFactory)
+    {
+    }
 
     /** {@inheritDoc} */
     public function parseMarketInfoV1(array $data): Data\V1\MarketInfo
@@ -111,6 +113,18 @@ class Parser implements Api\Contracts\ParserContract
             $name,
             ...$this->map($data, fn (array $arg) => $this->parseKline($arg))->toArray()
         );
+    }
+
+    public function parseMarket(string $marketName): Api\Data\V1\Market
+    {
+        [$stock, $money] = explode('_', $marketName);
+
+        return new Api\Data\V1\Market($stock, $money);
+    }
+
+    public function parseMarketCollection(array $data): ArrayCollection
+    {
+        return $this->map($data, fn (string $market): Api\Data\V1\Market => $this->parseMarket($market));
     }
 
     /**
