@@ -38,6 +38,13 @@ namespace Kartavik\WhiteBIT\Api;
  *  5: numeric-string,
  *  6: numeric-string
  * }
+ * @psalm-type TradeHistoryItem = array{
+ *  id: int,
+ *  type: 'buy'|'sell',
+ *  time: float,
+ *  amount: numeric-string,
+ *  price: numeric-string
+ * }
  */
 interface Action
 {
@@ -46,4 +53,5 @@ interface Action
     public const TICKER = 'ticker';
     public const KLINE = 'kline';
     public const SYMBOLS = 'symbols';
+    public const HISTORY = 'history';
 }

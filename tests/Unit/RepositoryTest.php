@@ -7,6 +7,7 @@ namespace Kartavik\WhiteBIT\Api\Tests\Unit;
 use GuzzleHttp;
 use Kartavik\WhiteBIT\Api\Adapter\Client;
 use Kartavik\WhiteBIT\Api\AmountFactory;
+use Kartavik\WhiteBIT\Api\Contracts\Data\V1\TradeHistoryItemContract;
 use Kartavik\WhiteBIT\Api\Data\V1;
 use Kartavik\WhiteBIT\Api\Http;
 use Kartavik\WhiteBIT\Api\Parser;
@@ -132,5 +133,45 @@ class RepositoryTest extends TestCase
         $this->assertInstanceOf(V1\KlineCollection::class, $result);
         $this->assertCount(1, $result);
         $this->assertInstanceOf(V1\Kline::class, $result[0]);
+    }
+
+    public function testGetSymbols(): void
+    {
+        $this->mock->append(new GuzzleHttp\Psr7\Response(200, [], \Safe\json_encode([
+            'success' => true,
+            'message' => '',
+            'result' => [
+                'BTC_USDT',
+            ],
+        ])));
+
+        $result = $this->repository->getSymbolsV1();
+
+        $this->assertCount(1, $result);
+        $this->assertInstanceOf(V1\Market::class, $result[0]);
+    }
+
+    public function testGetHistory(): void
+    {
+        $this->mock->append(new GuzzleHttp\Psr7\Response(200, [], \Safe\json_encode([
+            'success' => true,
+            'message' => '',
+            'result' => [
+                [
+                    'id' => 1231231,
+                    'type' => TradeHistoryItemContract::TYPE_BUY,
+                    'time' => 123123.123123,
+                    'amount' => '123123.312313',
+                    'price' => '123123.123123',
+                ],
+            ],
+        ])));
+
+        /** @var V1\TradeHistoryCollection $result */
+        $result = $this->repository->getTradeHistoryV1('BTC', 'USDT', 123);
+
+        $this->assertCount(1, $result);
+        $this->assertEquals('BTC_USDT', $result->getMarket());
+        $this->assertInstanceOf(TradeHistoryItemContract::class, $result[0]);
     }
 }

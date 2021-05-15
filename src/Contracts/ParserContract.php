@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api\Contracts;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Kartavik\WhiteBIT\Api;
 
@@ -13,6 +12,7 @@ use Kartavik\WhiteBIT\Api;
  * @psalm-import-type MarketActivityV1Data from Api\Action
  * @psalm-import-type MarketActivity from Api\Action
  * @psalm-import-type KlineItem from Api\Action
+ * @psalm-import-type TradeHistoryItem from Api\Action
  */
 interface ParserContract
 {
@@ -64,4 +64,15 @@ interface ParserContract
      * @return Collection<int, Api\Contracts\Data\V1\MarketContract>
      */
     public function parseMarketCollection(array $data): Collection;
+
+    /**
+     * @param TradeHistoryItem $item
+     */
+    public function parseTradeHistoryItem(array $item): Api\Contracts\Data\V1\TradeHistoryItemContract;
+
+    /**
+     * @param list<TradeHistoryItem> $data
+     * @return Collection<int, Api\Contracts\Data\V1\TradeHistoryItemContract>
+     */
+    public function parseTradeHistoryCollection(string $market, array $data): Collection;
 }

@@ -6,15 +6,16 @@ namespace Kartavik\WhiteBIT\Api\Data\V1;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Kartavik\WhiteBIT\Api\Contracts\Data\V1\KlineCollectionContract;
+use Kartavik\WhiteBIT\Api\Contracts\Data\V1\KlineContract;
 
 /**
- * @template-extends ArrayCollection<int, Kline>
+ * @template-extends ArrayCollection<int, KlineContract>
  */
 class KlineCollection extends ArrayCollection implements KlineCollectionContract
 {
     public function __construct(
         private string $name,
-        Kline ...$kline
+        KlineContract ...$kline
     ) {
         parent::__construct($kline);
     }

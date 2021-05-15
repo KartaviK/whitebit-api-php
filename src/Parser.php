@@ -6,6 +6,7 @@ namespace Kartavik\WhiteBIT\Api;
 
 use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Kartavik\WhiteBIT\Api;
 use Kartavik\WhiteBIT\Api\Contracts\AmountFactoryContract;
 
@@ -125,6 +126,28 @@ class Parser implements Api\Contracts\ParserContract
     public function parseMarketCollection(array $data): ArrayCollection
     {
         return $this->map($data, fn (string $market): Api\Data\V1\Market => $this->parseMarket($market));
+    }
+
+    public function parseTradeHistoryItem(array $item): Api\Contracts\Data\V1\TradeHistoryItemContract
+    {
+        return new Api\Data\V1\TradeHistoryItem(
+            $item['id'],
+            $item['type'],
+            $item['time'],
+            $this->amountFactory->build($item['amount']),
+            $this->amountFactory->build($item['price'])
+        );
+    }
+
+    public function parseTradeHistoryCollection(string $market, array $data): Api\Data\V1\TradeHistoryCollection
+    {
+        return new Api\Data\V1\TradeHistoryCollection(
+            $market,
+            ...$this->map(
+                $data,
+                fn (array $item): Api\Data\V1\TradeHistoryItem => $this->parseTradeHistoryItem($item)
+            )->toArray()
+        );
     }
 
     /**

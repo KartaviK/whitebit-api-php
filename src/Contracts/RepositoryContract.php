@@ -22,4 +22,8 @@ interface RepositoryContract
         string $interval = '1h',
         int $limit = 1440
     ): iterable;
+
+    public function getSymbolsV1(): iterable;
+
+    public function getTradeHistoryV1(string $stock, string $money, int $lastId, int $limit = 50): iterable;
 }

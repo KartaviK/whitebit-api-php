@@ -111,7 +111,29 @@ class Repository implements Contracts\RepositoryContract, Contracts\RepositoryAs
     public function getSymbolsV1Async(): Promise
     {
         return $this->http->get(Version::V_1(), Contracts\HttpContract::PUBLIC_API, Action::SYMBOLS)
-            ->then(fn (array $result): iterable => $this->parser->parseMarketCollection($result));
+            ->then(fn (array $result): iterable => $this->parse(
+                $result,
+                fn (array $data) => $this->parser->parseMarketCollection($data)
+            ));
+    }
+
+    public function getTradeHistoryV1(string $stock, string $money, int $lastId, int $limit = 50): iterable
+    {
+        return $this->getTradeHistoryV1Async($stock, $money, $lastId, $limit)->wait();
+    }
+
+    public function getTradeHistoryV1Async(string $stock, string $money, int $lastId, int $limit = 50): Promise
+    {
+        $market = strtoupper("{$stock}_{$money}");
+
+        return $this->http->get(Version::V_1(), Contracts\HttpContract::PUBLIC_API, Action::HISTORY, [
+            'market' => $market,
+            'lastId' => $lastId,
+            'limit' => $limit,
+        ])->then(fn (array $result): iterable => $this->parse(
+            $result,
+            fn (array $data) => $this->parser->parseTradeHistoryCollection($market, $data)
+        ));
     }
 
     public function parse(array $data, callable $parse): mixed

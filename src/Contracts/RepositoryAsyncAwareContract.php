@@ -22,4 +22,8 @@ interface RepositoryAsyncAwareContract
         string $interval = '1h',
         int $limit = 1440
     ): Promise;
+
+    public function getSymbolsV1Async(): Promise;
+
+    public function getTradeHistoryV1Async(string $stock, string $money, int $lastId, int $limit = 50): Promise;
 }
