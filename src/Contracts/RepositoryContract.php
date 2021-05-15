@@ -6,6 +6,7 @@ namespace Kartavik\WhiteBIT\Api\Contracts;
 
 use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
 use Kartavik\WhiteBIT\Api\Contracts\Data\V1\MarketActivityContract;
+use Kartavik\WhiteBIT\Api\Interval;
 
 interface RepositoryContract
 {
@@ -13,17 +14,17 @@ interface RepositoryContract
 
     public function getMarketsActivityV1(): iterable;
 
-    public function getSingleMarketActivityV1(PairContract $pair): MarketActivityContract;
+    public function getSingleMarketActivityV1(PairContract $pair): mixed;
 
     public function getKline(
         PairContract $pair,
         ?int $start = null,
         ?int $end = null,
-        string $interval = '1h',
+        string $interval = Interval::DEFAULT,
         int $limit = 1440
     ): iterable;
 
     public function getSymbolsV1(): iterable;
 
-    public function getTradeHistoryV1(PairContract $pair, int $lastId, int $limit = 50): iterable;
+    public function getTradeHistoryV1(PairContract $pair, int $lastId = 1, int $limit = 50): iterable;
 }

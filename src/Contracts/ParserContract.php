@@ -80,5 +80,9 @@ interface ParserContract
      * @param list<TradeHistoryItem> $data
      * @return Collection<int, Api\Contracts\Data\V1\TradeHistoryItemContract>
      */
-    public function parseTradeHistoryCollection(Api\Contracts\Data\PairContract $market, array $data): Collection;
+    public function parseTradeHistoryCollection(
+        Api\Contracts\Data\PairContract $market,
+        int $lastId,
+        array $data
+    ): Collection;
 }

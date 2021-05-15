@@ -149,10 +149,12 @@ class Parser implements Api\Contracts\ParserContract
 
     public function parseTradeHistoryCollection(
         Api\Contracts\Data\PairContract $market,
+        int $lastId,
         array $data
     ): Api\Data\V1\TradeHistoryCollection {
         return new Api\Data\V1\TradeHistoryCollection(
             $market,
+            $lastId,
             ...$this->map(
                 $data,
                 fn (array $item): Api\Data\V1\TradeHistoryItem => $this->parseTradeHistoryItem($item)

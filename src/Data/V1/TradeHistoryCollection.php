@@ -15,6 +15,7 @@ class TradeHistoryCollection extends ArrayCollection
 {
     public function __construct(
         private PairContract $pair,
+        private int $lastId,
         TradeHistoryItemContract ...$history
     ) {
         parent::__construct($history);
@@ -23,5 +24,10 @@ class TradeHistoryCollection extends ArrayCollection
     public function getMarket(): string
     {
         return $this->pair->getMarketName();
+    }
+
+    public function getLastId(): int
+    {
+        return $this->lastId;
     }
 }

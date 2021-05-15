@@ -6,6 +6,7 @@ namespace Kartavik\WhiteBIT\Api\Contracts;
 
 use Http\Promise\Promise;
 use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
+use Kartavik\WhiteBIT\Api\Interval;
 
 interface RepositoryAsyncAwareContract
 {
@@ -19,11 +20,11 @@ interface RepositoryAsyncAwareContract
         PairContract $pair,
         ?int $start = null,
         ?int $end = null,
-        string $interval = '1h',
+        string $interval = Interval::DEFAULT,
         int $limit = 1440
     ): Promise;
 
     public function getSymbolsV1Async(): Promise;
 
-    public function getTradeHistoryV1Async(PairContract $pair, int $lastId, int $limit = 50): Promise;
+    public function getTradeHistoryV1Async(PairContract $pair, int $lastId = 1, int $limit = 50): Promise;
 }
