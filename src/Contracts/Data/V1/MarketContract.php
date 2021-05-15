@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api\Contracts\Data\V1;
 
-interface MarketContract
+use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
+
+interface MarketContract extends PairContract
 {
     public function getStock(): string;
 

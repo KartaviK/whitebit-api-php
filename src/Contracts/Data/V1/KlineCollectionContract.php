@@ -6,7 +6,7 @@ namespace Kartavik\WhiteBIT\Api\Contracts\Data\V1;
 
 interface KlineCollectionContract
 {
-    public function getName(): string;
+    public function getMarket(): string;
 
     /** @return list<KlineContract> */
     public function getKline(): array;

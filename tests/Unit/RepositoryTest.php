@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Kartavik\WhiteBIT\Api\Tests\Unit;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp;
 use Kartavik\WhiteBIT\Api\Adapter\Client;
 use Kartavik\WhiteBIT\Api\AmountFactory;
 use Kartavik\WhiteBIT\Api\Contracts\Data\V1\TradeHistoryItemContract;
+use Kartavik\WhiteBIT\Api\Data\Pair;
 use Kartavik\WhiteBIT\Api\Data\V1;
 use Kartavik\WhiteBIT\Api\Http;
 use Kartavik\WhiteBIT\Api\Parser;
@@ -52,6 +54,7 @@ class RepositoryTest extends TestCase
             ],
         ])));
 
+        /** @var ArrayCollection<int, V1\MarketInfo> $result */
         $result = $this->repository->getMarketsInfo(Version::V_1());
 
         $this->assertCount(1, $result);
@@ -81,6 +84,7 @@ class RepositoryTest extends TestCase
             ],
         ])));
 
+        /** @var ArrayCollection<int, V1\MarketActivity> $result */
         $result = $this->repository->getMarketsActivityV1();
 
         $this->assertCount(1, $result);
@@ -105,7 +109,10 @@ class RepositoryTest extends TestCase
             ],
         ])));
 
-        $result = $this->repository->getSingleMarketActivityV1('ETH', 'BTC');
+        $stock = 'ETH';
+        $money = 'BTC';
+        $pair = new Pair($stock, $money);
+        $result = $this->repository->getSingleMarketActivityV1($pair);
 
         $this->assertInstanceOf(V1\MarketActivity::class, $result);
     }
@@ -128,9 +135,14 @@ class RepositoryTest extends TestCase
             ],
         ])));
 
-        $result = $this->repository->getKline('ETH', 'BTC');
+        $stock = 'ETH';
+        $money = 'BTC';
+        $pair = new Pair($stock, $money);
+        /** @var V1\KlineCollection $result */
+        $result = $this->repository->getKline($pair);
 
         $this->assertInstanceOf(V1\KlineCollection::class, $result);
+        $this->assertEquals($pair->getMarketName(), $result->getMarket());
         $this->assertCount(1, $result);
         $this->assertInstanceOf(V1\Kline::class, $result[0]);
     }
@@ -167,11 +179,14 @@ class RepositoryTest extends TestCase
             ],
         ])));
 
+        $stock = 'BTC';
+        $money = 'ETH';
+        $pair = new Pair($stock, $money);
         /** @var V1\TradeHistoryCollection $result */
-        $result = $this->repository->getTradeHistoryV1('BTC', 'USDT', 123);
+        $result = $this->repository->getTradeHistoryV1($pair, 123);
 
         $this->assertCount(1, $result);
-        $this->assertEquals('BTC_USDT', $result->getMarket());
+        $this->assertEquals($pair->getMarketName(), $result->getMarket());
         $this->assertInstanceOf(TradeHistoryItemContract::class, $result[0]);
     }
 }

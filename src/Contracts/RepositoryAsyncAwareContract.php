@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kartavik\WhiteBIT\Api\Contracts;
 
 use Http\Promise\Promise;
+use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
 
 interface RepositoryAsyncAwareContract
 {
@@ -12,11 +13,10 @@ interface RepositoryAsyncAwareContract
 
     public function getMarketsActivityV1Async(): Promise;
 
-    public function getSingleMarketActivityV1Async(string $stock, string $money): Promise;
+    public function getSingleMarketActivityV1Async(PairContract $pair): Promise;
 
     public function getKlineAsync(
-        string $stock,
-        string $money,
+        PairContract $pair,
         ?int $start = null,
         ?int $end = null,
         string $interval = '1h',
@@ -25,5 +25,5 @@ interface RepositoryAsyncAwareContract
 
     public function getSymbolsV1Async(): Promise;
 
-    public function getTradeHistoryV1Async(string $stock, string $money, int $lastId, int $limit = 50): Promise;
+    public function getTradeHistoryV1Async(PairContract $pair, int $lastId, int $limit = 50): Promise;
 }

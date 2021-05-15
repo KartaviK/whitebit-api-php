@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kartavik\WhiteBIT\Api\Data\V1;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
 use Kartavik\WhiteBIT\Api\Contracts\Data\V1\KlineCollectionContract;
 use Kartavik\WhiteBIT\Api\Contracts\Data\V1\KlineContract;
 
@@ -14,15 +15,15 @@ use Kartavik\WhiteBIT\Api\Contracts\Data\V1\KlineContract;
 class KlineCollection extends ArrayCollection implements KlineCollectionContract
 {
     public function __construct(
-        private string $name,
+        private PairContract $pair,
         KlineContract ...$kline
     ) {
         parent::__construct($kline);
     }
 
-    public function getName(): string
+    public function getMarket(): string
     {
-        return $this->name;
+        return $this->pair->getMarketName();
     }
 
     public function getKline(): array

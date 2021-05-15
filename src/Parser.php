@@ -6,7 +6,6 @@ namespace Kartavik\WhiteBIT\Api;
 
 use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Kartavik\WhiteBIT\Api;
 use Kartavik\WhiteBIT\Api\Contracts\AmountFactoryContract;
 
@@ -52,12 +51,14 @@ class Parser implements Api\Contracts\ParserContract
     }
 
     /** {@inheritDoc} */
-    public function parseMarketActivityV1(array $data, string $name): Api\Contracts\Data\V1\MarketActivityContract
-    {
+    public function parseMarketActivityV1(
+        array $data,
+        Api\Contracts\Data\PairContract $market
+    ): Api\Contracts\Data\V1\MarketActivityContract {
         $ticker = $data['ticker'];
 
         return new Api\Data\V1\MarketActivity(
-            $name,
+            $market,
             (int) $data['at'],
             $this->amountFactory->build($ticker['ask']),
             $this->amountFactory->build($ticker['bid']),
@@ -75,14 +76,19 @@ class Parser implements Api\Contracts\ParserContract
     {
         return $this->map(
             $data,
-            fn (array $arg, string $name): Api\Data\V1\MarketActivity => $this->parseMarketActivityV1($arg, $name)
+            fn (array $arg, string $name): Api\Data\V1\MarketActivity => $this->parseMarketActivityV1(
+                $arg,
+                $this->parseMarket($name)
+            )
         );
     }
 
-    public function parseSingleMarketActivity(array $data, string $name): Api\Data\V1\MarketActivity
-    {
+    public function parseSingleMarketActivity(
+        array $data,
+        Api\Contracts\Data\PairContract $market
+    ): Api\Data\V1\MarketActivity {
         return new Api\Data\V1\MarketActivity(
-            $name,
+            $market,
             Carbon::now()->getTimestamp(),
             $this->amountFactory->build($data['ask']),
             $this->amountFactory->build($data['bid']),
@@ -108,10 +114,12 @@ class Parser implements Api\Contracts\ParserContract
         );
     }
 
-    public function parseKlineCollection(array $data, string $name): Api\Data\V1\KlineCollection
-    {
+    public function parseKlineCollection(
+        array $data,
+        Api\Contracts\Data\PairContract $market
+    ): Api\Data\V1\KlineCollection {
         return new Api\Data\V1\KlineCollection(
-            $name,
+            $market,
             ...$this->map($data, fn (array $arg) => $this->parseKline($arg))->toArray()
         );
     }
@@ -139,8 +147,10 @@ class Parser implements Api\Contracts\ParserContract
         );
     }
 
-    public function parseTradeHistoryCollection(string $market, array $data): Api\Data\V1\TradeHistoryCollection
-    {
+    public function parseTradeHistoryCollection(
+        Api\Contracts\Data\PairContract $market,
+        array $data
+    ): Api\Data\V1\TradeHistoryCollection {
         return new Api\Data\V1\TradeHistoryCollection(
             $market,
             ...$this->map(

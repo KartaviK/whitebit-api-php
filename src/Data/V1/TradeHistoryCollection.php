@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kartavik\WhiteBIT\Api\Data\V1;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
 use Kartavik\WhiteBIT\Api\Contracts\Data\V1\TradeHistoryItemContract;
 
 /**
@@ -13,7 +14,7 @@ use Kartavik\WhiteBIT\Api\Contracts\Data\V1\TradeHistoryItemContract;
 class TradeHistoryCollection extends ArrayCollection
 {
     public function __construct(
-        private string $market,
+        private PairContract $pair,
         TradeHistoryItemContract ...$history
     ) {
         parent::__construct($history);
@@ -21,6 +22,6 @@ class TradeHistoryCollection extends ArrayCollection
 
     public function getMarket(): string
     {
-        return $this->market;
+        return $this->pair->getMarketName();
     }
 }

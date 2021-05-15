@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Kartavik\WhiteBIT\Api\Data\V1;
 
 use Kartavik\WhiteBIT\Api\Contracts\AmountContract;
+use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
 use Kartavik\WhiteBIT\Api\Contracts\Data\V1\MarketActivityContract;
 
 class MarketActivity implements MarketActivityContract
 {
     public function __construct(
-        private string $name,
+        private PairContract $pair,
         private int $time,
         private AmountContract $bid,
         private AmountContract $ask,
@@ -25,7 +26,7 @@ class MarketActivity implements MarketActivityContract
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->pair->getMarketName();
     }
 
     public function getTime(): int

@@ -31,7 +31,10 @@ interface ParserContract
     /**
      * @param MarketActivityV1Data $data
      */
-    public function parseMarketActivityV1(array $data, string $name): Api\Contracts\Data\V1\MarketActivityContract;
+    public function parseMarketActivityV1(
+        array $data,
+        Api\Contracts\Data\PairContract $market
+    ): Api\Contracts\Data\V1\MarketActivityContract;
 
     /**
      * @param array<string, MarketActivityV1Data> $data
@@ -42,7 +45,10 @@ interface ParserContract
     /**
      * @param MarketActivity $data
      */
-    public function parseSingleMarketActivity(array $data, string $name): Api\Data\V1\MarketActivity;
+    public function parseSingleMarketActivity(
+        array $data,
+        Api\Contracts\Data\PairContract $market
+    ): Api\Data\V1\MarketActivity;
 
     /**
      * @param KlineItem $data
@@ -52,7 +58,7 @@ interface ParserContract
     /**
      * @param list<KlineItem> $data
      */
-    public function parseKlineCollection(array $data, string $name): Collection;
+    public function parseKlineCollection(array $data, Api\Contracts\Data\PairContract $market): Collection;
 
     /**
      * @return Api\Contracts\Data\V1\MarketContract
@@ -74,5 +80,5 @@ interface ParserContract
      * @param list<TradeHistoryItem> $data
      * @return Collection<int, Api\Contracts\Data\V1\TradeHistoryItemContract>
      */
-    public function parseTradeHistoryCollection(string $market, array $data): Collection;
+    public function parseTradeHistoryCollection(Api\Contracts\Data\PairContract $market, array $data): Collection;
 }
