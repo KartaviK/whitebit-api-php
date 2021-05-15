@@ -30,18 +30,22 @@ class Http implements Contracts\HttpContract
         );
 
         return $this->http->sendAsyncRequest($request)
-            ->then(function (ResponseInterface $response) use ($request): array {
+            ->then(function (ResponseInterface $response) use ($request, $version): array {
                 $payload = $this->parseBody($response);
 
-                if (isset($payload['success']) && !$payload['success']) {
-                    throw new Exceptions\ClientException($payload['message']);
+                if ($version->equals(Version::V_1())) {
+                    if (isset($payload['success']) && !$payload['success']) {
+                        throw new Exceptions\ClientException($payload['message']);
+                    }
+
+                    if (!isset($payload['result']) && isset($payload['status'])) {
+                        throw new Exceptions\ServerException($payload['errors'], $request, $response);
+                    }
+
+                    return $payload['result'];
                 }
 
-                if (!isset($payload['result']) && isset($payload['status'])) {
-                    throw new Exceptions\ServerException($payload['errors'], $request, $response);
-                }
-
-                return $payload['result'];
+                return $payload;
             });
     }
 
