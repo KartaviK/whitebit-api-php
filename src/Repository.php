@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Doctrine\Common\Collections\Collection;
 use Http\Promise\Promise;
 use Kartavik\WhiteBIT\Api\Contracts\Data\PairContract;
-use Kartavik\WhiteBIT\Api\Contracts\Data\V1\MarketActivityContract;
 use Kartavik\WhiteBIT\Api\Data\V1\MarketActivity;
 
 class Repository implements Contracts\RepositoryContract, Contracts\RepositoryAsyncAwareContract
